@@ -1,11 +1,22 @@
 export default {
   // Navigation
   nav: {
+    reports: 'レポート',
+    groups: {
+      overview: '概要',
+      operations: 'オペレーション',
+      finance: '財務'
+    },
+    collapse: 'サイドバーを折りたたむ',
+    expand: 'サイドバーを展開',
+    openMenu: 'ナビゲーションメニューを開く',
+    closeMenu: 'ナビゲーションメニューを閉じる',
     overview: '概要',
     inventory: '在庫',
     orders: '注文',
     finance: '財務',
     demandForecast: '需要予測',
+    restocking: '補充',
     companyName: '触媒コンポーネンツ',
     subtitle: '在庫管理システム'
   },
@@ -106,6 +117,8 @@ export default {
     title: '注文',
     description: '顧客注文の表示と管理',
     allOrders: 'すべての注文',
+    submittedOrders: '提出済み注文',
+    noSubmittedOrders: '提出済みの補充注文はまだありません',
     totalOrders: '総注文数',
     totalRevenue: '総収益',
     avgOrderValue: '平均注文額',
@@ -125,7 +138,9 @@ export default {
       totalValue: '合計金額',
       status: 'ステータス',
       expectedDelivery: '予定配達日',
-      actualDelivery: '実際の配達日'
+      actualDelivery: '実際の配達日',
+      leadTime: 'リードタイム（日）',
+      totalCost: '合計コスト'
     }
   },
 
@@ -204,6 +219,7 @@ export default {
     shipped: '出荷済み',
     processing: '処理中',
     backordered: 'バックオーダー',
+    submitted: '提出済み',
     inStock: '在庫あり',
     lowStock: '在庫僅少',
     adequate: '適量'
@@ -311,7 +327,51 @@ export default {
     selectLanguage: '言語を選択'
   },
 
-  // Common
+  // Restocking
+  restocking: {
+    title: '補充',
+    description: '需要予測と在庫レベルに基づき、予算内で発注すべき品目を提案します',
+    budget: '補充予算',
+    budgetHint: 'ドラッグして予算を設定します。在庫リスク、需要傾向、不足数の順に優先されます。',
+    recommendedItems: '推奨品目',
+    noRecommendations: '現在のフィルターでは不足品目がありません。補充は不要です。',
+    noItemsWithinBudget: '予算が少なすぎて不足を補えません。予算を増やすと推奨が表示されます。',
+    summary: {
+      budget: '予算',
+      totalCost: '計画コスト',
+      remaining: '残予算',
+      itemsRecommended: '推奨品目数',
+      itemsSkipped: '対象外品目数'
+    },
+    table: {
+      sku: 'SKU',
+      itemName: '品目名',
+      category: 'カテゴリ',
+      warehouse: '倉庫',
+      onHand: '在庫数',
+      reorderPoint: '発注点',
+      forecast: '予測（30日）',
+      shortfall: '不足数',
+      recommendedQty: '推奨数量',
+      unitCost: '単価',
+      lineTotal: '小計',
+      priority: '優先度',
+      trend: '傾向',
+      leadTime: 'リードタイム'
+    },
+    partialFill: '一部',
+    belowReorder: '発注点以下',
+    days: '{count}日',
+    placeOrder: '注文する',
+    placingOrder: '注文中...',
+    orderPlaced: '注文 {orderNumber} を提出しました',
+    expectedDelivery: '予定配達日: {date}',
+    viewOrders: '注文タブで見る',
+    orderFailed: '注文の提出に失敗しました',
+    stockNotUpdatedHint: '在庫は納品まで更新されないため、推奨内容は変わりません。'
+  },
+
+  // 発注書モーダル
   common: {
     loading: '読み込み中...',
     error: 'エラー',

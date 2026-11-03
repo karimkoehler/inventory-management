@@ -102,5 +102,27 @@ export const api = {
   async getPurchaseOrderByBacklogItem(backlogItemId) {
     const response = await axios.get(`${API_BASE_URL}/purchase-orders/${backlogItemId}`)
     return response.data
+  },
+
+  async getRestockRecommendations(budget, filters = {}) {
+    const params = new URLSearchParams()
+    params.append('budget', budget)
+    // Only warehouse and category apply: inventory has no time or status dimension
+    if (filters.warehouse && filters.warehouse !== 'all') params.append('warehouse', filters.warehouse)
+    if (filters.category && filters.category !== 'all') params.append('category', filters.category)
+
+    const response = await axios.get(`${API_BASE_URL}/restock/recommendations?${params.toString()}`)
+    return response.data
+  },
+
+  async createRestockOrder(payload) {
+    // payload: { budget, items: [{ sku, quantity }] }
+    const response = await axios.post(`${API_BASE_URL}/restock-orders`, payload)
+    return response.data
+  },
+
+  async getRestockOrders() {
+    const response = await axios.get(`${API_BASE_URL}/restock-orders`)
+    return response.data
   }
 }

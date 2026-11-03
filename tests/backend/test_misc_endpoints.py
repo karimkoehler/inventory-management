@@ -70,18 +70,22 @@ class TestDemandEndpoints:
         response = client.get("/api/demand")
         data = response.json()
 
-        # Check for the new items we added
+        # Forecasts must reference SKUs that exist in inventory so the
+        # restocking recommender can join them to stock levels and unit cost
         skus = [item["item_sku"] for item in data]
+        inventory_skus = {item["sku"] for item in client.get("/api/inventory").json()}
+        missing = [sku for sku in skus if sku not in inventory_skus]
+        assert not missing, f"Forecast SKUs not found in inventory: {missing}"
 
-        # Should have Temperature Sensor Module and Logic Controller Board
-        assert "SNR-420" in skus, "Missing Temperature Sensor Module"
-        assert "CTL-330" in skus, "Missing Logic Controller Board"
+        # Should have Temperature Sensor Module and 8-bit Microcontroller
+        assert "TMP-201" in skus, "Missing Temperature Sensor Module"
+        assert "MCU-401" in skus, "Missing 8-bit Microcontroller"
 
         # Verify they are marked as stable
         for item in data:
-            if item["item_sku"] in ["SNR-420", "CTL-330"]:
+            if item["item_sku"] in ["TMP-201", "MCU-401"]:
                 assert item["trend"].lower() == "stable", \
-                    f"New item {item['item_name']} should have stable trend"
+                    f"Stable item {item['item_name']} should have stable trend"
 
 
 class TestBacklogEndpoints:

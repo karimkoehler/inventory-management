@@ -402,6 +402,44 @@ export default {
     }
   },
 
+  // Reports
+  reports: {
+    title: 'Performance Reports',
+    // Word order differs per language ("Mar 2025" vs "2025年3月")
+    monthLabel: '{month} {year}',
+    subtitle: 'View quarterly performance metrics and monthly trends',
+    loading: 'Loading reports...',
+    loadError: 'Failed to load reports',
+    noData: 'No orders match the current filters',
+    notAvailable: 'N/A',
+    quarterly: {
+      title: 'Quarterly Performance',
+      quarter: 'Quarter',
+      totalOrders: 'Total Orders',
+      totalRevenue: 'Total Revenue',
+      avgOrderValue: 'Avg Order Value',
+      fulfillmentRate: 'Fulfillment Rate'
+    },
+    trend: {
+      title: 'Monthly Revenue Trend',
+      ariaLabel: 'Bar chart of monthly revenue'
+    },
+    mom: {
+      title: 'Month-over-Month Analysis',
+      month: 'Month',
+      orders: 'Orders',
+      revenue: 'Revenue',
+      change: 'Change',
+      growthRate: 'Growth Rate'
+    },
+    stats: {
+      totalRevenue: 'Total Revenue',
+      avgMonthlyRevenue: 'Avg Monthly Revenue',
+      totalOrders: 'Total Orders',
+      bestQuarter: 'Best Performing Quarter'
+    }
+  },
+
   // Common
   common: {
     loading: 'Loading...',

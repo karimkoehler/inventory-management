@@ -2,6 +2,15 @@ import axios from 'axios'
 
 const API_BASE_URL = 'http://localhost:8001/api'
 
+// Query string for the four global filters that apply to order-based data
+const orderFilterParams = (filters = {}) => {
+  const params = new URLSearchParams()
+  for (const key of ['warehouse', 'category', 'status', 'month']) {
+    if (filters[key] && filters[key] !== 'all') params.append(key, filters[key])
+  }
+  return params.toString()
+}
+
 export const api = {
   async getInventory(filters = {}) {
     const params = new URLSearchParams()
@@ -101,6 +110,16 @@ export const api = {
 
   async getPurchaseOrderByBacklogItem(backlogItemId) {
     const response = await axios.get(`${API_BASE_URL}/purchase-orders/${backlogItemId}`)
+    return response.data
+  },
+
+  async getQuarterlyReports(filters = {}) {
+    const response = await axios.get(`${API_BASE_URL}/reports/quarterly?${orderFilterParams(filters)}`)
+    return response.data
+  },
+
+  async getMonthlyTrends(filters = {}) {
+    const response = await axios.get(`${API_BASE_URL}/reports/monthly-trends?${orderFilterParams(filters)}`)
     return response.data
   },
 

@@ -402,6 +402,44 @@ export default {
     }
   },
 
+  // レポート
+  reports: {
+    title: 'パフォーマンスレポート',
+    // Word order differs per language ("Mar 2025" vs "2025年3月")
+    monthLabel: '{year}年{month}',
+    subtitle: '四半期ごとの業績指標と月次トレンドを確認できます',
+    loading: 'レポートを読み込み中...',
+    loadError: 'レポートの読み込みに失敗しました',
+    noData: '現在のフィルター条件に一致する注文はありません',
+    notAvailable: '該当なし',
+    quarterly: {
+      title: '四半期業績',
+      quarter: '四半期',
+      totalOrders: '総注文数',
+      totalRevenue: '総売上',
+      avgOrderValue: '平均注文額',
+      fulfillmentRate: '出荷達成率'
+    },
+    trend: {
+      title: '月次売上トレンド',
+      ariaLabel: '月次売上の棒グラフ'
+    },
+    mom: {
+      title: '前月比分析',
+      month: '月',
+      orders: '注文数',
+      revenue: '売上',
+      change: '増減額',
+      growthRate: '成長率'
+    },
+    stats: {
+      totalRevenue: '総売上',
+      avgMonthlyRevenue: '月平均売上',
+      totalOrders: '総注文数',
+      bestQuarter: '最高業績の四半期'
+    }
+  },
+
   // Common
   common: {
     loading: '読み込み中...',

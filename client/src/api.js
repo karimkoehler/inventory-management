@@ -2,6 +2,15 @@ import axios from 'axios'
 
 const API_BASE_URL = 'http://localhost:8001/api'
 
+// Query string for the four global filters that apply to order-based data
+const orderFilterParams = (filters = {}) => {
+  const params = new URLSearchParams()
+  for (const key of ['warehouse', 'category', 'status', 'month']) {
+    if (filters[key] && filters[key] !== 'all') params.append(key, filters[key])
+  }
+  return params.toString()
+}
+
 export const api = {
   async getInventory(filters = {}) {
     const params = new URLSearchParams()
@@ -101,6 +110,38 @@ export const api = {
 
   async getPurchaseOrderByBacklogItem(backlogItemId) {
     const response = await axios.get(`${API_BASE_URL}/purchase-orders/${backlogItemId}`)
+    return response.data
+  },
+
+  async getQuarterlyReports(filters = {}) {
+    const response = await axios.get(`${API_BASE_URL}/reports/quarterly?${orderFilterParams(filters)}`)
+    return response.data
+  },
+
+  async getMonthlyTrends(filters = {}) {
+    const response = await axios.get(`${API_BASE_URL}/reports/monthly-trends?${orderFilterParams(filters)}`)
+    return response.data
+  },
+
+  async getRestockRecommendations(budget, filters = {}) {
+    const params = new URLSearchParams()
+    params.append('budget', budget)
+    // Only warehouse and category apply: inventory has no time or status dimension
+    if (filters.warehouse && filters.warehouse !== 'all') params.append('warehouse', filters.warehouse)
+    if (filters.category && filters.category !== 'all') params.append('category', filters.category)
+
+    const response = await axios.get(`${API_BASE_URL}/restock/recommendations?${params.toString()}`)
+    return response.data
+  },
+
+  async createRestockOrder(payload) {
+    // payload: { budget, items: [{ sku, quantity }] }
+    const response = await axios.post(`${API_BASE_URL}/restock-orders`, payload)
+    return response.data
+  },
+
+  async getRestockOrders() {
+    const response = await axios.get(`${API_BASE_URL}/restock-orders`)
     return response.data
   }
 }

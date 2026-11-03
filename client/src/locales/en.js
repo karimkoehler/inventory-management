@@ -1,11 +1,22 @@
 export default {
   // Navigation
   nav: {
+    reports: 'Reports',
+    groups: {
+      overview: 'Overview',
+      operations: 'Operations',
+      finance: 'Finance'
+    },
+    collapse: 'Collapse sidebar',
+    expand: 'Expand sidebar',
+    openMenu: 'Open navigation menu',
+    closeMenu: 'Close navigation menu',
     overview: 'Overview',
     inventory: 'Inventory',
     orders: 'Orders',
     finance: 'Finance',
     demandForecast: 'Demand Forecast',
+    restocking: 'Restocking',
     companyName: 'Catalyst Components',
     subtitle: 'Inventory Management System'
   },
@@ -106,6 +117,8 @@ export default {
     title: 'Orders',
     description: 'View and manage customer orders',
     allOrders: 'All Orders',
+    submittedOrders: 'Submitted Orders',
+    noSubmittedOrders: 'No restock orders submitted yet',
     totalOrders: 'Total Orders',
     totalRevenue: 'Total Revenue',
     avgOrderValue: 'Avg Order Value',
@@ -125,7 +138,9 @@ export default {
       totalValue: 'Total Value',
       status: 'Status',
       expectedDelivery: 'Expected Delivery',
-      actualDelivery: 'Actual Delivery'
+      actualDelivery: 'Actual Delivery',
+      leadTime: 'Lead Time (Days)',
+      totalCost: 'Total Cost'
     }
   },
 
@@ -204,6 +219,7 @@ export default {
     shipped: 'Shipped',
     processing: 'Processing',
     backordered: 'Backordered',
+    submitted: 'Submitted',
     inStock: 'In Stock',
     lowStock: 'Low Stock',
     adequate: 'Adequate'
@@ -309,6 +325,119 @@ export default {
     english: 'English',
     japanese: 'Japanese',
     selectLanguage: 'Select Language'
+  },
+
+  // Restocking
+  restocking: {
+    title: 'Restocking',
+    description: 'Recommend what to reorder within a budget, based on demand forecasts and stock levels',
+    budget: 'Restock Budget',
+    budgetHint: 'Drag to set the budget. Items are prioritized by stock risk, demand trend, and shortfall size.',
+    recommendedItems: 'Recommended Items',
+    noRecommendations: 'No shortfalls found for the current filters. Nothing to restock.',
+    noItemsWithinBudget: 'Budget is too low to cover any shortfall. Increase the budget to see recommendations.',
+    summary: {
+      budget: 'Budget',
+      totalCost: 'Planned Cost',
+      remaining: 'Remaining Budget',
+      itemsRecommended: 'Items Recommended',
+      itemsSkipped: 'Items Skipped'
+    },
+    table: {
+      sku: 'SKU',
+      itemName: 'Item Name',
+      category: 'Category',
+      warehouse: 'Warehouse',
+      onHand: 'On Hand',
+      reorderPoint: 'Reorder Point',
+      forecast: 'Forecast (30d)',
+      shortfall: 'Shortfall',
+      recommendedQty: 'Recommended Qty',
+      unitCost: 'Unit Cost',
+      lineTotal: 'Line Total',
+      priority: 'Priority',
+      trend: 'Trend',
+      leadTime: 'Lead Time'
+    },
+    partialFill: 'Partial',
+    belowReorder: 'Below reorder point',
+    days: '{count} days',
+    placeOrder: 'Place Order',
+    placingOrder: 'Placing Order...',
+    orderPlaced: 'Order {orderNumber} submitted',
+    expectedDelivery: 'Expected delivery: {date}',
+    viewOrders: 'View in Orders',
+    orderFailed: 'Failed to place order',
+    stockNotUpdatedHint: 'Stock levels are not adjusted until delivery, so recommendations are unchanged.'
+  },
+
+  // Purchase order modal
+  purchaseOrder: {
+    createTitle: 'Create Purchase Order',
+    viewTitle: 'Purchase Order',
+    sku: 'SKU',
+    shortfall: 'Shortfall',
+    units: 'units',
+    supplierName: 'Supplier Name',
+    quantity: 'Quantity',
+    unitCost: 'Unit Cost (USD)',
+    expectedDelivery: 'Expected Delivery Date',
+    notes: 'Notes (optional)',
+    totalCost: 'Total Cost',
+    poNumber: 'PO Number',
+    status: 'Status',
+    createdDate: 'Created',
+    submit: 'Create Purchase Order',
+    submitting: 'Creating...',
+    loadFailed: 'Failed to load the purchase order',
+    createFailed: 'Failed to create the purchase order',
+    alreadyExists: 'A purchase order already exists for this item',
+    notFound: 'Purchase order or backlog item not found',
+    errors: {
+      supplierRequired: 'Supplier name is required',
+      quantityInvalid: 'Quantity must be a whole number of at least 1',
+      unitCostInvalid: 'Unit cost must be greater than 0',
+      dateRequired: 'Expected delivery date is required',
+      datePast: 'Delivery date cannot be in the past'
+    }
+  },
+
+  // Reports
+  reports: {
+    title: 'Performance Reports',
+    // Word order differs per language ("Mar 2025" vs "2025年3月")
+    monthLabel: '{month} {year}',
+    subtitle: 'View quarterly performance metrics and monthly trends',
+    loading: 'Loading reports...',
+    loadError: 'Failed to load reports',
+    noData: 'No orders match the current filters',
+    notAvailable: 'N/A',
+    quarterly: {
+      title: 'Quarterly Performance',
+      quarter: 'Quarter',
+      totalOrders: 'Total Orders',
+      totalRevenue: 'Total Revenue',
+      avgOrderValue: 'Avg Order Value',
+      fulfillmentRate: 'Fulfillment Rate'
+    },
+    trend: {
+      title: 'Monthly Revenue Trend',
+      ariaLabel: 'Bar chart of monthly revenue'
+    },
+    mom: {
+      title: 'Month-over-Month Analysis',
+      month: 'Month',
+      orders: 'Orders',
+      revenue: 'Revenue',
+      change: 'Change',
+      growthRate: 'Growth Rate'
+    },
+    stats: {
+      totalRevenue: 'Total Revenue',
+      avgMonthlyRevenue: 'Avg Monthly Revenue',
+      totalOrders: 'Total Orders',
+      bestQuarter: 'Best Performing Quarter'
+    }
   },
 
   // Common

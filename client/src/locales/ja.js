@@ -1,11 +1,22 @@
 export default {
   // Navigation
   nav: {
+    reports: 'レポート',
+    groups: {
+      overview: '概要',
+      operations: 'オペレーション',
+      finance: '財務'
+    },
+    collapse: 'サイドバーを折りたたむ',
+    expand: 'サイドバーを展開',
+    openMenu: 'ナビゲーションメニューを開く',
+    closeMenu: 'ナビゲーションメニューを閉じる',
     overview: '概要',
     inventory: '在庫',
     orders: '注文',
     finance: '財務',
     demandForecast: '需要予測',
+    restocking: '補充',
     companyName: '触媒コンポーネンツ',
     subtitle: '在庫管理システム'
   },
@@ -106,6 +117,8 @@ export default {
     title: '注文',
     description: '顧客注文の表示と管理',
     allOrders: 'すべての注文',
+    submittedOrders: '提出済み注文',
+    noSubmittedOrders: '提出済みの補充注文はまだありません',
     totalOrders: '総注文数',
     totalRevenue: '総収益',
     avgOrderValue: '平均注文額',
@@ -125,7 +138,9 @@ export default {
       totalValue: '合計金額',
       status: 'ステータス',
       expectedDelivery: '予定配達日',
-      actualDelivery: '実際の配達日'
+      actualDelivery: '実際の配達日',
+      leadTime: 'リードタイム（日）',
+      totalCost: '合計コスト'
     }
   },
 
@@ -204,6 +219,7 @@ export default {
     shipped: '出荷済み',
     processing: '処理中',
     backordered: 'バックオーダー',
+    submitted: '提出済み',
     inStock: '在庫あり',
     lowStock: '在庫僅少',
     adequate: '適量'
@@ -309,6 +325,119 @@ export default {
     english: 'English',
     japanese: '日本語',
     selectLanguage: '言語を選択'
+  },
+
+  // Restocking
+  restocking: {
+    title: '補充',
+    description: '需要予測と在庫レベルに基づき、予算内で発注すべき品目を提案します',
+    budget: '補充予算',
+    budgetHint: 'ドラッグして予算を設定します。在庫リスク、需要傾向、不足数の順に優先されます。',
+    recommendedItems: '推奨品目',
+    noRecommendations: '現在のフィルターでは不足品目がありません。補充は不要です。',
+    noItemsWithinBudget: '予算が少なすぎて不足を補えません。予算を増やすと推奨が表示されます。',
+    summary: {
+      budget: '予算',
+      totalCost: '計画コスト',
+      remaining: '残予算',
+      itemsRecommended: '推奨品目数',
+      itemsSkipped: '対象外品目数'
+    },
+    table: {
+      sku: 'SKU',
+      itemName: '品目名',
+      category: 'カテゴリ',
+      warehouse: '倉庫',
+      onHand: '在庫数',
+      reorderPoint: '発注点',
+      forecast: '予測（30日）',
+      shortfall: '不足数',
+      recommendedQty: '推奨数量',
+      unitCost: '単価',
+      lineTotal: '小計',
+      priority: '優先度',
+      trend: '傾向',
+      leadTime: 'リードタイム'
+    },
+    partialFill: '一部',
+    belowReorder: '発注点以下',
+    days: '{count}日',
+    placeOrder: '注文する',
+    placingOrder: '注文中...',
+    orderPlaced: '注文 {orderNumber} を提出しました',
+    expectedDelivery: '予定配達日: {date}',
+    viewOrders: '注文タブで見る',
+    orderFailed: '注文の提出に失敗しました',
+    stockNotUpdatedHint: '在庫は納品まで更新されないため、推奨内容は変わりません。'
+  },
+
+  // 発注書モーダル
+  purchaseOrder: {
+    createTitle: '発注書の作成',
+    viewTitle: '発注書',
+    sku: 'SKU',
+    shortfall: '不足数',
+    units: '個',
+    supplierName: '仕入先名',
+    quantity: '数量',
+    unitCost: '単価（USD）',
+    expectedDelivery: '納品予定日',
+    notes: '備考（任意）',
+    totalCost: '合計金額',
+    poNumber: '発注番号',
+    status: 'ステータス',
+    createdDate: '作成日',
+    submit: '発注書を作成',
+    submitting: '作成中...',
+    loadFailed: '発注書の読み込みに失敗しました',
+    createFailed: '発注書の作成に失敗しました',
+    alreadyExists: 'この商品にはすでに発注書が存在します',
+    notFound: '発注書または未出荷項目が見つかりません',
+    errors: {
+      supplierRequired: '仕入先名は必須です',
+      quantityInvalid: '数量は1以上の整数で入力してください',
+      unitCostInvalid: '単価は0より大きい値を入力してください',
+      dateRequired: '納品予定日は必須です',
+      datePast: '納品予定日に過去の日付は指定できません'
+    }
+  },
+
+  // レポート
+  reports: {
+    title: 'パフォーマンスレポート',
+    // Word order differs per language ("Mar 2025" vs "2025年3月")
+    monthLabel: '{year}年{month}',
+    subtitle: '四半期ごとの業績指標と月次トレンドを確認できます',
+    loading: 'レポートを読み込み中...',
+    loadError: 'レポートの読み込みに失敗しました',
+    noData: '現在のフィルター条件に一致する注文はありません',
+    notAvailable: '該当なし',
+    quarterly: {
+      title: '四半期業績',
+      quarter: '四半期',
+      totalOrders: '総注文数',
+      totalRevenue: '総売上',
+      avgOrderValue: '平均注文額',
+      fulfillmentRate: '出荷達成率'
+    },
+    trend: {
+      title: '月次売上トレンド',
+      ariaLabel: '月次売上の棒グラフ'
+    },
+    mom: {
+      title: '前月比分析',
+      month: '月',
+      orders: '注文数',
+      revenue: '売上',
+      change: '増減額',
+      growthRate: '成長率'
+    },
+    stats: {
+      totalRevenue: '総売上',
+      avgMonthlyRevenue: '月平均売上',
+      totalOrders: '総注文数',
+      bestQuarter: '最高業績の四半期'
+    }
   },
 
   // Common

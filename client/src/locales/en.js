@@ -372,6 +372,37 @@ export default {
   },
 
   // Purchase order modal
+  purchaseOrder: {
+    createTitle: 'Create Purchase Order',
+    viewTitle: 'Purchase Order',
+    sku: 'SKU',
+    shortfall: 'Shortfall',
+    units: 'units',
+    supplierName: 'Supplier Name',
+    quantity: 'Quantity',
+    unitCost: 'Unit Cost (USD)',
+    expectedDelivery: 'Expected Delivery Date',
+    notes: 'Notes (optional)',
+    totalCost: 'Total Cost',
+    poNumber: 'PO Number',
+    status: 'Status',
+    createdDate: 'Created',
+    submit: 'Create Purchase Order',
+    submitting: 'Creating...',
+    loadFailed: 'Failed to load the purchase order',
+    createFailed: 'Failed to create the purchase order',
+    alreadyExists: 'A purchase order already exists for this item',
+    notFound: 'Purchase order or backlog item not found',
+    errors: {
+      supplierRequired: 'Supplier name is required',
+      quantityInvalid: 'Quantity must be a whole number of at least 1',
+      unitCostInvalid: 'Unit cost must be greater than 0',
+      dateRequired: 'Expected delivery date is required',
+      datePast: 'Delivery date cannot be in the past'
+    }
+  },
+
+  // Common
   common: {
     loading: 'Loading...',
     error: 'Error',

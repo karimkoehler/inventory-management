@@ -210,7 +210,7 @@
                   </td>
                   <td>
                     <button
-                      v-if="!item.purchase_order_id"
+                      v-if="!item.has_purchase_order"
                       @click.stop="openPOModal(item)"
                       class="po-button create"
                     >
@@ -304,12 +304,14 @@ import { useI18n } from '../composables/useI18n'
 import { formatCurrency } from '../utils/currency'
 import ProductDetailModal from '../components/ProductDetailModal.vue'
 import BacklogDetailModal from '../components/BacklogDetailModal.vue'
+import PurchaseOrderModal from '../components/PurchaseOrderModal.vue'
 
 export default {
   name: 'Dashboard',
   components: {
     ProductDetailModal,
     BacklogDetailModal,
+    PurchaseOrderModal,
   },
   setup() {
     const { t, currentCurrency, translateProductName, translateWarehouse } = useI18n()
@@ -663,11 +665,11 @@ export default {
     }
 
     const handlePOCreated = (poData) => {
-      // Update the backlog item with the new PO ID
+      // Flip the row to "View PO" without refetching; has_purchase_order is the same
+      // flag GET /api/backlog returns, so the state survives a reload
       const item = allBacklogItems.value.find(b => b.id === poData.backlog_item_id)
       if (item) {
-        item.purchase_order_id = poData.id
-        item.purchase_order = poData
+        item.has_purchase_order = true
       }
       showPOModal.value = false
     }
@@ -860,7 +862,9 @@ export default {
 /* Order Health Dashboard Styles */
 .order-health-container {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  /* Donut column sized to the 200px chart (+ padding); metrics take the rest, and
+     minmax(0, …) lets that column shrink instead of overflowing the card */
+  grid-template-columns: auto minmax(0, 1fr);
   gap: var(--space-6);
   align-items: center;
   padding: var(--space-4);
@@ -935,7 +939,9 @@ export default {
 }
 
 .health-metric-value {
-  font-size: 1.75rem;
+  /* Scales down in narrow cards so values like "$31,166,853" don't get clipped */
+  font-size: clamp(1.125rem, 1.6vw, 1.75rem);
+  overflow-wrap: anywhere;
   font-weight: 700;
   color: var(--color-text);
   letter-spacing: -0.025em;
@@ -988,7 +994,10 @@ export default {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  padding-right: var(--space-3);
+  padding: 0 var(--space-3);
+  /* Never narrower than its own value label; otherwise small categories
+     (e.g. Circuit Boards) clip the white text against the light track */
+  min-width: max-content;
   transition: width 0.6s ease;
 }
 

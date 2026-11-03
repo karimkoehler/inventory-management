@@ -1,9 +1,9 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from typing import List, Optional
-from pydantic import BaseModel
-from datetime import datetime, timedelta
-from mock_data import inventory_items, orders, demand_forecasts, backlog_items, spending_summary, monthly_spending, category_spending, recent_transactions, purchase_orders, restock_orders
+from typing import List, Literal, Optional
+from pydantic import BaseModel, Field
+from datetime import date, datetime, timedelta
+from mock_data import inventory_items, orders, demand_forecasts, backlog_items, spending_summary, monthly_spending, category_spending, recent_transactions, purchase_orders, restock_orders, tasks
 
 app = FastAPI(title="Factory Inventory Management System")
 
@@ -133,11 +133,25 @@ class PurchaseOrder(BaseModel):
 
 class CreatePurchaseOrderRequest(BaseModel):
     backlog_item_id: str
-    supplier_name: str
-    quantity: int
-    unit_cost: float
-    expected_delivery_date: str
+    supplier_name: str = Field(min_length=1)
+    quantity: int = Field(ge=1)
+    unit_cost: float = Field(gt=0)
+    # Parsed as a date so malformed values are rejected with 422; stored back as "YYYY-MM-DD"
+    expected_delivery_date: date
     notes: Optional[str] = None
+
+class Task(BaseModel):
+    id: str
+    title: str
+    priority: Literal["high", "medium", "low"]
+    dueDate: str
+    status: Literal["pending", "completed"]
+
+class CreateTaskRequest(BaseModel):
+    # Field names mirror what TasksModal.vue sends (camelCase dueDate)
+    title: str = Field(min_length=1)
+    priority: Literal["high", "medium", "low"] = "medium"
+    dueDate: date
 
 class RestockRecommendationItem(BaseModel):
     sku: str
@@ -324,6 +338,79 @@ def get_backlog():
         item_dict["has_purchase_order"] = has_po
         result.append(item_dict)
     return result
+
+@app.post("/api/purchase-orders", response_model=PurchaseOrder, status_code=201)
+def create_purchase_order(request: CreatePurchaseOrderRequest):
+    """Create a purchase order for a backlog item (at most one PO per item)"""
+    if not any(item["id"] == request.backlog_item_id for item in backlog_items):
+        raise HTTPException(status_code=404, detail="Backlog item not found")
+    if any(po["backlog_item_id"] == request.backlog_item_id for po in purchase_orders):
+        raise HTTPException(status_code=409, detail="A purchase order already exists for this backlog item")
+    # Mirrors the modal's client-side rule; today itself is allowed
+    if request.expected_delivery_date < date.today():
+        raise HTTPException(status_code=400, detail="expected_delivery_date cannot be in the past")
+
+    purchase_order = {
+        "id": f"PO-{len(purchase_orders) + 1:04d}",
+        "backlog_item_id": request.backlog_item_id,
+        "supplier_name": request.supplier_name.strip(),
+        "quantity": request.quantity,
+        "unit_cost": request.unit_cost,
+        "expected_delivery_date": request.expected_delivery_date.isoformat(),
+        "status": "Pending",
+        "created_date": datetime.now().replace(microsecond=0).isoformat(),
+        "notes": request.notes,
+    }
+    # Append in place so GET /api/backlog's has_purchase_order flag sees it and tests can reset it
+    purchase_orders.append(purchase_order)
+    return purchase_order
+
+@app.get("/api/purchase-orders/{backlog_item_id}", response_model=PurchaseOrder)
+def get_purchase_order_by_backlog_item(backlog_item_id: str):
+    """Get the purchase order for a backlog item"""
+    purchase_order = next((po for po in purchase_orders if po["backlog_item_id"] == backlog_item_id), None)
+    if not purchase_order:
+        raise HTTPException(status_code=404, detail="Purchase order not found")
+    return purchase_order
+
+@app.get("/api/tasks", response_model=List[Task])
+def get_tasks():
+    """Get all user-created tasks, newest first"""
+    return list(reversed(tasks))
+
+@app.post("/api/tasks", response_model=Task, status_code=201)
+def create_task(request: CreateTaskRequest):
+    """Create a task"""
+    # IDs are prefixed strings because the client merges these with its seeded demo
+    # tasks, which use plain integer IDs; a bare counter would collide with them.
+    next_number = max((int(t["id"].split("-")[1]) for t in tasks), default=0) + 1
+    task = {
+        "id": f"task-{next_number}",
+        "title": request.title.strip(),
+        "priority": request.priority,
+        "dueDate": request.dueDate.isoformat(),
+        "status": "pending",
+    }
+    tasks.append(task)
+    return task
+
+@app.delete("/api/tasks/{task_id}")
+def delete_task(task_id: str):
+    """Delete a task"""
+    index = next((i for i, t in enumerate(tasks) if t["id"] == task_id), None)
+    if index is None:
+        raise HTTPException(status_code=404, detail="Task not found")
+    tasks.pop(index)
+    return {"deleted": task_id}
+
+@app.patch("/api/tasks/{task_id}", response_model=Task)
+def toggle_task(task_id: str):
+    """Toggle a task between pending and completed"""
+    task = next((t for t in tasks if t["id"] == task_id), None)
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+    task["status"] = "completed" if task["status"] == "pending" else "pending"
+    return task
 
 @app.get("/api/restock/recommendations", response_model=RestockRecommendationResponse)
 def get_restock_recommendations(
